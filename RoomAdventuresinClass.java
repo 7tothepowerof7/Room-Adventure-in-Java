@@ -35,7 +35,7 @@ public class RoomAdventuresinClass {
 
             // prompt
             System.out.print("\nWhat would you like to do? ");
-            String input = s.nextLine().trim();
+            String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
                 System.out.println(DEFAULT_STATUS);
@@ -131,8 +131,100 @@ public class RoomAdventuresinClass {
                 default:
                     System.out.println(DEFAULT_STATUS);
             }
+
+            String verb = words[0].toLowerCase();
+            String noun = words[1].toLowerCase();
+
+switch (verb) {
+    case "look" -> {
+        String[] items = currentRoom.getItems();
+        String[] desc = currentRoom.getItemDescriptions();
+        if (items != null && desc != null) {
+            for (int i = 0; i < items.length && i < desc.length; i++) {
+                System.out.println(items[i] + ": " + desc[i]);
+            }
+        } else {
+            System.out.println("There is nothing notable here.");
         }
     }
+
+    case "go" -> {
+        Room next = currentRoom.getExitDestination(noun);
+        if (next != null) {
+            currentRoom = next;
+            System.out.println("You go " + noun + ".");
+        } else {
+            System.out.println("You can't go that way.");
+        }
+    }
+
+    case "take" -> {
+        if (currentRoom.isGrabbable(noun)) {
+            boolean added = false;
+            for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] == null) {
+                    inventory[i] = noun;
+                    added = true;
+                    break;
+                }
+            }
+            if (added) {
+                currentRoom.removeGrabbable(noun);
+                System.out.println("You take the " + noun + ".");
+            } else {
+                System.out.println("Your inventory is full.");
+            }
+        } else {
+            System.out.println("You can't take that.");
+        }
+    }
+
+    case "drop" -> {
+        boolean found = false;
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null && inventory[i].equalsIgnoreCase(noun)) {
+                inventory[i] = null;
+                currentRoom.addGrabbable(noun);
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            System.out.println("You drop the " + noun + ".");
+        } else {
+            System.out.println("You do not have that item.");
+
+    case "eat" -> {
+            // eat requires the item to be in inventory
+            boolean found = false;
+            for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] != null && inventory[i].equalsIgnoreCase(noun)) {
+                    found = true;
+                    // Remove the eaten item from inventory
+                    inventory[i] = null;
+                    break;
+                    }
+                }
+            if (!found) {
+                System.out.println("You don't have that to eat.");
+                } else {
+                if ("apple".equalsIgnoreCase(noun)) {
+                    System.out.println("You eat the apple. You hear a hissing noise from inside a wall.");
+                } else {
+                    System.out.println("You can't eat that.");
+        }
+    }
+}
+    case "quit" -> {
+        System.out.println("Goodbye.");
+        scanner.close();
+        return;
+    }
+
+    default -> System.out.println(DEFAULT_STATUS);
+        }
+    }
+}
 
     private static void setupGame() {
         Room room1 = new Room("Room 1");
