@@ -47,7 +47,6 @@ public class RoomAdventuresinClass {
             String verb = words[0].toLowerCase();
             String noun = words[1].toLowerCase();
 
-            // Rule-style switch (Java 14+)
 switch (verb) {
     case "look" -> {
         String[] items = currentRoom.getItems();
@@ -106,9 +105,28 @@ switch (verb) {
             System.out.println("You drop the " + noun + ".");
         } else {
             System.out.println("You do not have that item.");
+
+    case "eat" -> {
+            // eat requires the item to be in inventory
+            boolean found = false;
+            for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] != null && inventory[i].equalsIgnoreCase(noun)) {
+                    found = true;
+                    // Remove the eaten item from inventory
+                    inventory[i] = null;
+                    break;
+                    }
+                }
+            if (!found) {
+                System.out.println("You don't have that to eat.");
+                } else {
+                if ("apple".equalsIgnoreCase(noun)) {
+                    System.out.println("You eat the apple. You hear a hissing noise from inside a wall.");
+                } else {
+                    System.out.println("You can't eat that.");
         }
     }
-
+}
     case "quit" -> {
         System.out.println("Goodbye.");
         scanner.close();
@@ -257,7 +275,7 @@ switch (verb) {
             return null;
         }
 
-        // grabbable helpers
+        // grabbable helpers    
         public boolean isGrabbable(String item) {
             if (grabbables == null) return false;
             for (String g : grabbables) {
